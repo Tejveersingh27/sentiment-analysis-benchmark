@@ -240,6 +240,17 @@ notebooks/01_logistic_regression_tfidf.ipynb
 * F1-score
 * Model benchmarking
 
+## Feature Experiment: Unigrams vs. Bigrams
+
+As a quick follow-up experiment, the best-performing model (Logistic Regression) was retrained using TF-IDF with both unigrams and bigrams (`ngram_range=(1, 2)`) instead of unigrams only, keeping `max_features=5000` the same.
+
+| Feature Set          | Test Accuracy |
+| --------------------- | ------------: |
+| Unigrams only          |        89.50% |
+| Unigrams + Bigrams     |    **89.87%** |
+
+Adding bigrams gave a small improvement. Unigrams alone lose word order, so a word like "not" carries no sentiment on its own, but a bigram like "not good" does. The gain is modest because `max_features` stays fixed at 5000, so bigrams have to compete with unigrams for a limited number of feature slots.
+
 ## Key Conclusion
 
 The experiment demonstrates that a more complex model does not automatically produce better results.
