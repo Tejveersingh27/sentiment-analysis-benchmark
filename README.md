@@ -63,7 +63,7 @@ TF-IDF converts each movie review into a numerical feature vector.
 [0.00, 0.73, 0.12, 0.00, ...]
 ```
 
-The vectorizer uses a maximum of 5,000 text features.
+The vectorizer uses a maximum of 5,000 text features, built from both unigrams and bigrams (`ngram_range=(1, 2)`), so it captures both single words (e.g. "good") and two-word phrases (e.g. "not good").
 
 ## Models Compared
 
@@ -77,11 +77,11 @@ The vectorizer uses a maximum of 5,000 text features.
 
 | Model                   | Test Accuracy |
 | ----------------------- | ------------: |
-| Logistic Regression     |    **89.50%** |
-| Linear SVM              |    **88.80%** |
-| Random Forest           |    **85.36%** |
-| Multinomial Naive Bayes |    **85.17%** |
-| Decision Tree           |    **70.82%** |
+| Logistic Regression     |    **89.87%** |
+| Linear SVM              |    **89.13%** |
+| Multinomial Naive Bayes |    **86.06%** |
+| Random Forest           |    **85.51%** |
+| Decision Tree           |    **71.26%** |
 
 Logistic Regression achieved the highest test accuracy.
 
@@ -89,10 +89,10 @@ Logistic Regression achieved the highest test accuracy.
 
 The Logistic Regression model achieved:
 
-* Accuracy: 89.50%
-* Negative precision: 0.90
-* Negative recall: 0.88
-* Negative F1-score: 0.89
+* Accuracy: 89.87%
+* Negative precision: 0.91
+* Negative recall: 0.89
+* Negative F1-score: 0.90
 * Positive precision: 0.89
 * Positive recall: 0.91
 * Positive F1-score: 0.90
@@ -100,12 +100,12 @@ The Logistic Regression model achieved:
 ```text
               precision    recall  f1-score   support
 
-    negative       0.90      0.88      0.89      4961
+    negative       0.91      0.89      0.90      4961
     positive       0.89      0.91      0.90      5039
 
     accuracy                           0.90     10000
-   macro avg       0.90      0.89      0.89     10000
-weighted avg       0.90      0.90      0.89     10000
+   macro avg       0.90      0.90      0.90     10000
+weighted avg       0.90      0.90      0.90     10000
 ```
 
 ## Model Observations
@@ -242,14 +242,14 @@ notebooks/01_logistic_regression_tfidf.ipynb
 
 ## Feature Experiment: Unigrams vs. Bigrams
 
-As a quick follow-up experiment, the best-performing model (Logistic Regression) was retrained using TF-IDF with both unigrams and bigrams (`ngram_range=(1, 2)`) instead of unigrams only, keeping `max_features=5000` the same.
+The benchmark originally used unigram-only TF-IDF features. A follow-up experiment retrained Logistic Regression with unigrams and bigrams together (`ngram_range=(1, 2)`), keeping `max_features=5000` the same:
 
 | Feature Set          | Test Accuracy |
 | --------------------- | ------------: |
 | Unigrams only          |        89.50% |
 | Unigrams + Bigrams     |    **89.87%** |
 
-Adding bigrams gave a small improvement. Unigrams alone lose word order, so a word like "not" carries no sentiment on its own, but a bigram like "not good" does. The gain is modest because `max_features` stays fixed at 5000, so bigrams have to compete with unigrams for a limited number of feature slots.
+Adding bigrams gave a small improvement. Unigrams alone lose word order, so a word like "not" carries no sentiment on its own, but a bigram like "not good" does. Because the improvement held up, unigrams + bigrams became the vectorizer used for every model in the benchmark, and the results and evaluation numbers above reflect that.
 
 ## Key Conclusion
 
